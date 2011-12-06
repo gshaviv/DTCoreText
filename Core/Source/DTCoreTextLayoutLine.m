@@ -48,14 +48,32 @@
 {
 	if ((self = [super init]))
 	{
+		layoutLock = dispatch_semaphore_create(1);
 		_line = line;
-		CFRetain(_line);
-
+		//Guy
+		
 		NSAttributedString *globalString = [layoutFrame attributedStringFragment];
-		_attributedString = [[globalString attributedSubstringFromRange:[self stringRange]] copy];
+		NSRange stringRange = [self stringRange];
+ 		_attributedString = [[globalString attributedSubstringFromRange:stringRange] copy];
 		
 		_baselineOrigin = origin;
-		layoutLock = dispatch_semaphore_create(1);
+		static const unichar softHypen = 0x00AD;
+        unichar lastChar = [[globalString string] characterAtIndex:stringRange.location + stringRange.length-1];
+        
+        if(softHypen == lastChar ) {
+            NSMutableAttributedString* lineAttrString = [[globalString attributedSubstringFromRange:stringRange] mutableCopy];
+            NSRange replaceRange = NSMakeRange(stringRange.length-1, 1);
+            [lineAttrString replaceCharactersInRange:replaceRange withString:@"-"];
+            
+            CTLineRef hyphenLine = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)lineAttrString);
+			CTLineRef justifiedLine = CTLineCreateJustifiedLine(hyphenLine, 1.0, [self width]); 
+			CFRelease(hyphenLine);
+            
+			_line = justifiedLine;
+        } else {
+			CFRetain(_line);
+		}
+		//E.O.G
 	}
 	return self;
 }

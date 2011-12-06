@@ -207,6 +207,24 @@
 		A7DBE49B12E6E53C00F25897 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7DBE49A12E6E53C00F25897 /* MediaPlayer.framework */; };
 		A7DBE4F812E6E5B000F25897 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7DBE4F712E6E5B000F25897 /* AVFoundation.framework */; };
 		DE08BAB5148808B20054DC84 /* DTCoreTextFontOverrides.plist in Resources */ = {isa = PBXBuildFile; fileRef = A788CA2114863EF100E1AFD9 /* DTCoreTextFontOverrides.plist */; };
+		E47F6218148E14D400237E73 /* hnjalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E47F6211148E14D400237E73 /* hnjalloc.c */; };
+		E47F6219148E14D400237E73 /* hnjalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E47F6211148E14D400237E73 /* hnjalloc.c */; };
+		E47F621A148E14D400237E73 /* hnjalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E47F6211148E14D400237E73 /* hnjalloc.c */; };
+		E47F621B148E14D400237E73 /* hnjalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = E47F6212148E14D400237E73 /* hnjalloc.h */; };
+		E47F621C148E14D400237E73 /* hnjalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = E47F6212148E14D400237E73 /* hnjalloc.h */; };
+		E47F621D148E14D400237E73 /* hyphen.c in Sources */ = {isa = PBXBuildFile; fileRef = E47F6213148E14D400237E73 /* hyphen.c */; };
+		E47F621E148E14D400237E73 /* hyphen.c in Sources */ = {isa = PBXBuildFile; fileRef = E47F6213148E14D400237E73 /* hyphen.c */; };
+		E47F621F148E14D400237E73 /* hyphen.c in Sources */ = {isa = PBXBuildFile; fileRef = E47F6213148E14D400237E73 /* hyphen.c */; };
+		E47F6220148E14D400237E73 /* hyphen.h in Headers */ = {isa = PBXBuildFile; fileRef = E47F6214148E14D400237E73 /* hyphen.h */; };
+		E47F6221148E14D400237E73 /* hyphen.h in Headers */ = {isa = PBXBuildFile; fileRef = E47F6214148E14D400237E73 /* hyphen.h */; };
+		E47F6222148E14D400237E73 /* Hyphenate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E47F6215148E14D400237E73 /* Hyphenate.bundle */; };
+		E47F6223148E14D400237E73 /* Hyphenate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E47F6215148E14D400237E73 /* Hyphenate.bundle */; };
+		E47F6224148E14D400237E73 /* NSString+Hyphenate.h in Headers */ = {isa = PBXBuildFile; fileRef = E47F6216148E14D400237E73 /* NSString+Hyphenate.h */; };
+		E47F6225148E14D400237E73 /* NSString+Hyphenate.h in Headers */ = {isa = PBXBuildFile; fileRef = E47F6216148E14D400237E73 /* NSString+Hyphenate.h */; };
+		E47F6226148E14D400237E73 /* NSString+Hyphenate.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F6217148E14D400237E73 /* NSString+Hyphenate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E47F6227148E14D400237E73 /* NSString+Hyphenate.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F6217148E14D400237E73 /* NSString+Hyphenate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		E47F6228148E14D400237E73 /* NSString+Hyphenate.m in Sources */ = {isa = PBXBuildFile; fileRef = E47F6217148E14D400237E73 /* NSString+Hyphenate.m */; };
+		E47F622A148E14D900237E73 /* Hyphenate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E47F6215148E14D400237E73 /* Hyphenate.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -337,6 +355,13 @@
 		A788CA7B148645A600E1AFD9 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		A7DBE49A12E6E53C00F25897 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		A7DBE4F712E6E5B000F25897 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		E47F6211148E14D400237E73 /* hnjalloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hnjalloc.c; sourceTree = "<group>"; };
+		E47F6212148E14D400237E73 /* hnjalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hnjalloc.h; sourceTree = "<group>"; };
+		E47F6213148E14D400237E73 /* hyphen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hyphen.c; sourceTree = "<group>"; };
+		E47F6214148E14D400237E73 /* hyphen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hyphen.h; sourceTree = "<group>"; };
+		E47F6215148E14D400237E73 /* Hyphenate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Hyphenate.bundle; sourceTree = "<group>"; };
+		E47F6216148E14D400237E73 /* NSString+Hyphenate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hyphenate.h"; sourceTree = "<group>"; };
+		E47F6217148E14D400237E73 /* NSString+Hyphenate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hyphenate.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -512,6 +537,7 @@
 		A788C90D14863E8700E1AFD9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				E47F622B148E151000237E73 /* Hyphenate */,
 				A70B4C9A1486518E00873A4A /* Layouting */,
 				A788CAA81486492200E1AFD9 /* Utils */,
 				A788CAA71486490600E1AFD9 /* UI */,
@@ -614,6 +640,20 @@
 			name = Utils;
 			sourceTree = "<group>";
 		};
+		E47F622B148E151000237E73 /* Hyphenate */ = {
+			isa = PBXGroup;
+			children = (
+				E47F6211148E14D400237E73 /* hnjalloc.c */,
+				E47F6212148E14D400237E73 /* hnjalloc.h */,
+				E47F6213148E14D400237E73 /* hyphen.c */,
+				E47F6214148E14D400237E73 /* hyphen.h */,
+				E47F6215148E14D400237E73 /* Hyphenate.bundle */,
+				E47F6216148E14D400237E73 /* NSString+Hyphenate.h */,
+				E47F6217148E14D400237E73 /* NSString+Hyphenate.m */,
+			);
+			name = Hyphenate;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -652,6 +692,9 @@
 				A788CA0214863E8700E1AFD9 /* UIColor+HTML.h in Headers */,
 				A788CA0C14863E8700E1AFD9 /* UIDevice+DTVersion.h in Headers */,
 				A70B4C9F1486558200873A4A /* DTCoreText.h in Headers */,
+				E47F621B148E14D400237E73 /* hnjalloc.h in Headers */,
+				E47F6220148E14D400237E73 /* hyphen.h in Headers */,
+				E47F6224148E14D400237E73 /* NSString+Hyphenate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,6 +734,9 @@
 				A788CA0D14863E8700E1AFD9 /* UIDevice+DTVersion.h in Headers */,
 				A788CA1814863EC600E1AFD9 /* DTCoreText-Prefix.pch in Headers */,
 				A70B4CA01486558200873A4A /* DTCoreText.h in Headers */,
+				E47F621C148E14D400237E73 /* hnjalloc.h in Headers */,
+				E47F6221148E14D400237E73 /* hyphen.h in Headers */,
+				E47F6225148E14D400237E73 /* NSString+Hyphenate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,6 +874,7 @@
 				A788CA4D14863EF100E1AFD9 /* WarAndPeace.html in Resources */,
 				A788CA4E14863EF100E1AFD9 /* XB Niloofar.ttf in Resources */,
 				A788CA4F14863EF100E1AFD9 /* XB NiloofarBd.ttf in Resources */,
+				E47F622A148E14D900237E73 /* Hyphenate.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,6 +882,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E47F6222148E14D400237E73 /* Hyphenate.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,6 +890,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E47F6223148E14D400237E73 /* Hyphenate.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -935,6 +984,9 @@
 				A788CA0014863E8700E1AFD9 /* NSURL+HTML.m in Sources */,
 				A788CA0514863E8700E1AFD9 /* UIColor+HTML.m in Sources */,
 				A788CA0F14863E8700E1AFD9 /* UIDevice+DTVersion.m in Sources */,
+				E47F6218148E14D400237E73 /* hnjalloc.c in Sources */,
+				E47F621D148E14D400237E73 /* hyphen.c in Sources */,
+				E47F6226148E14D400237E73 /* NSString+Hyphenate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -972,6 +1024,9 @@
 				A788CA0114863E8700E1AFD9 /* NSURL+HTML.m in Sources */,
 				A788CA0614863E8700E1AFD9 /* UIColor+HTML.m in Sources */,
 				A788CA1014863E8700E1AFD9 /* UIDevice+DTVersion.m in Sources */,
+				E47F6219148E14D400237E73 /* hnjalloc.c in Sources */,
+				E47F621E148E14D400237E73 /* hyphen.c in Sources */,
+				E47F6227148E14D400237E73 /* NSString+Hyphenate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1012,6 +1067,9 @@
 				A788CAA2148648C700E1AFD9 /* NSString+Paragraphs.m in Sources */,
 				A788CAA3148648C700E1AFD9 /* NSURL+HTML.m in Sources */,
 				A788CAA4148648C700E1AFD9 /* UIDevice+DTVersion.m in Sources */,
+				E47F621A148E14D400237E73 /* hnjalloc.c in Sources */,
+				E47F621F148E14D400237E73 /* hyphen.c in Sources */,
+				E47F6228148E14D400237E73 /* NSString+Hyphenate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,6 +28,7 @@
 
 #import "CGUtils.h"
 #import "NSString+UTF8Cleaner.h"
+#import "NSString+Hyphenate.h"
 
 // standard options
 NSString *NSBaseURLDocumentOption = @"NSBaseURLDocumentOption";
@@ -827,6 +828,11 @@ NSString *DTDefaultStyleSheet = @"DTDefaultStyleSheet";
 						tagContents = [tagContents stringByNormalizingWhitespace];
 					}
 					tagContents = [tagContents stringByReplacingHTMLEntities];
+					
+					//Guy
+					if (currentTag.paragraphStyle.textAlignment == kCTJustifiedTextAlignment) {
+						tagContents = [tagContents stringByHyphenatingWithLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+					}
 					
 					tagName = currentTag.tagName;
 					
