@@ -61,6 +61,7 @@
 #include "hnjalloc.h"
 #include "hyphen.h"
 
+
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 
 static char *

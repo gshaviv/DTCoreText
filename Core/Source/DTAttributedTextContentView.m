@@ -411,6 +411,21 @@ static Class _layerClassToUseForDTAttributedTextContentView = nil;
 	return neededSize;
 }
 
+- (CGSize)suggestedFrameSizeToFitEntireStringConstraintedToWidth:(CGFloat)width
+{
+	if (!isnormal(width))
+	{
+		width = self.bounds.size.width;
+	}
+
+	CGSize neededSize = [self.layouter suggestedFrameSizeToFitEntireStringConstraintedToWidth:width-edgeInsets.left-edgeInsets.right];
+	
+	// add vertical insets
+	neededSize.height += edgeInsets.top + edgeInsets.bottom;
+	
+	return neededSize;
+}
+
 - (CGSize)attributedStringSizeThatFits:(CGFloat)width
 {
 	if (!isnormal(width))
@@ -632,13 +647,17 @@ static Class _layerClassToUseForDTAttributedTextContentView = nil;
 		// prevent unnecessary locking if we don't need to create new layout frame
 		SYNCHRONIZE_START(selfLock)
 		{
-			// we can only layout if we have our own layouter
-			if (theLayouter)
+			// Test again - small window where another thread could have been setting this value
+			if (!_layoutFrame)
 			{
-				CGRect rect = UIEdgeInsetsInsetRect(self.bounds, edgeInsets);
-				rect.size.height = CGFLOAT_OPEN_HEIGHT; // necessary height set as soon as we know it.
-				
-				_layoutFrame = [theLayouter layoutFrameWithRect:rect range:NSMakeRange(0, 0)];
+				// we can only layout if we have our own layouter
+				if (theLayouter)
+				{
+					CGRect rect = UIEdgeInsetsInsetRect(self.bounds, edgeInsets);
+					rect.size.height = CGFLOAT_OPEN_HEIGHT; // necessary height set as soon as we know it.
+					
+					_layoutFrame = [theLayouter layoutFrameWithRect:rect range:NSMakeRange(0, 0)];
+				}
 			}
 		}
 		SYNCHRONIZE_END(selfLock)
@@ -653,9 +672,6 @@ static Class _layerClassToUseForDTAttributedTextContentView = nil;
 	{
 		if (_layoutFrame != layoutFrame)
 		{
-			
-			_layoutFrame = layoutFrame;
-			
 			[self removeAllCustomViewsForLinks];
 			
 			if (layoutFrame)
@@ -663,6 +679,7 @@ static Class _layerClassToUseForDTAttributedTextContentView = nil;
 				[self setNeedsLayout];
 				[self setNeedsDisplay];
 			}
+			_layoutFrame = layoutFrame;
 		}
 	}
 	SYNCHRONIZE_END(selfLock)
