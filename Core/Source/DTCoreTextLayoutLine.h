@@ -28,7 +28,7 @@
 - (CGFloat)paragraphSpacing;
 - (CGFloat)lineHeight;
 - (CGFloat)calculatedLeading;
-
+- (CGFloat)width;
 - (void)drawInContext:(CGContextRef)context;
 
 - (BOOL)correctAttachmentHeights:(CGFloat *)downShift;
