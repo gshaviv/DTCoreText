@@ -46,6 +46,7 @@ NSString *DTDefaultLineHeightMultiplier = @"DTDefaultLineHeightMultiplier";
 NSString *DTDefaultFirstLineHeadIndent = @"DTDefaultFirstLineHeadIndent";
 NSString *DTDefaultHeadIndent = @"DTDefaultHeadIndent";
 NSString *DTDefaultListIndent = @"DTDefaultListIndent";
+NSString *DTParagraphSpacing = @"DTParagraphSpacing";
 
 NSString *DTDefaultStyleSheet = @"DTDefaultStyleSheet";
 
@@ -737,7 +738,11 @@ NSString *DTDefaultStyleSheet = @"DTDefaultStyleSheet";
 			{
 				if (tagOpen)
 				{
-					currentTag.paragraphStyle.paragraphSpacing = defaultFontDescriptor.pointSize;
+					if ([options objectForKey:DTParagraphSpacing]) {
+						currentTag.paragraphStyle.paragraphSpacing = [[options objectForKey:DTParagraphSpacing] floatValue];
+					} else {
+						currentTag.paragraphStyle.paragraphSpacing = defaultFontDescriptor.pointSize;
+					}
 					currentTag.paragraphStyle.firstLineIndent = currentTag.paragraphStyle.headIndent + defaultParagraphStyle.firstLineIndent;
 				}
 			}

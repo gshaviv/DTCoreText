@@ -190,10 +190,10 @@
 	}
 	
 	// correct spacing to match current font size
-	if (self.paragraphStyle.paragraphSpacing>0)
-	{
-		self.paragraphStyle.paragraphSpacing = self.fontDescriptor.pointSize;
-	}
+//	if (self.paragraphStyle.paragraphSpacing>0)
+//	{
+//		self.paragraphStyle.paragraphSpacing = self.fontDescriptor.pointSize;
+//	}
 	
 	// correct spacing to match current font size
 	if (self.paragraphStyle.paragraphSpacingBefore>0)
