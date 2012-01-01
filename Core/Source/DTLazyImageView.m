@@ -30,8 +30,6 @@ static NSCache *_imageCache = nil;
 	NSUInteger _expectedSize;
     
     BOOL shouldShowProgressiveDownload;
-	
-	__unsafe_unretained id<DTLazyImageViewDelegate> _delegate;
 }
 @synthesize delegate=_delegate;
 
