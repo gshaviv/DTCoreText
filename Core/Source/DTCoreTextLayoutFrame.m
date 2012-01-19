@@ -763,7 +763,6 @@ static BOOL _DTCoreTextLayoutFramesShouldDrawDebugFrames = NO;
 // a bug in CoreText shifts the last line of paragraphs slightly down
 - (void)correctLineOrigins
 {
-#if 0
 	DTCoreTextLayoutLine *previousLine = nil;
 	
 	CGPoint previousLineOrigin = CGPointZero;
@@ -795,7 +794,6 @@ static BOOL _DTCoreTextLayoutFramesShouldDrawDebugFrames = NO;
 		
 		previousLine = currentLine;
 	}
-#endif
 }
 
 #pragma mark Properties
