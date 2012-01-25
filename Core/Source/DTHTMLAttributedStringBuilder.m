@@ -218,6 +218,13 @@
 		defaultParagraphStyle.listIndent = [defaultListIndent integerValue];
 	}
 	
+	NSNumber *defaultParagraphSpacing = [_options objectForKey:DTParagraphSpacing];
+	if (defaultParagraphSpacing) {
+		defaultParagraphStyle.paragraphSpacing = [defaultParagraphSpacing integerValue];
+	} else {
+		defaultParagraphStyle.paragraphSpacing = defaultFontDescriptor.pointSize;
+	}
+	
 	DTHTMLElement *defaultTag = [[DTHTMLElement alloc] init];
 	defaultTag.fontDescriptor = defaultFontDescriptor;
 	defaultTag.paragraphStyle = defaultParagraphStyle;
@@ -630,7 +637,7 @@
 	}
 	else if ([elementName isEqualToString:@"p"])
 	{
-		currentTag.paragraphStyle.paragraphSpacing = defaultFontDescriptor.pointSize;
+		currentTag.paragraphStyle.paragraphSpacing = defaultParagraphStyle.paragraphSpacing;
 		currentTag.paragraphStyle.firstLineIndent = currentTag.paragraphStyle.headIndent + defaultParagraphStyle.firstLineIndent;
 	}
 	else if ([elementName isEqualToString:@"br"])
