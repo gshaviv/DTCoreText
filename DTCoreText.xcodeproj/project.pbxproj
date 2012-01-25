@@ -226,8 +226,8 @@
 		A7949A9614CC498700A8CCDE /* DTHTMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A7949A4914CAF5A300A8CCDE /* DTHTMLParser.m */; };
 		A7949A9714CC498700A8CCDE /* DTHTMLAttributedStringBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A7949A4614CAF58C00A8CCDE /* DTHTMLAttributedStringBuilder.m */; };
 		A7949A9B14CC562F00A8CCDE /* DTCSSStylesheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A788C92914863E8700E1AFD9 /* DTCSSStylesheet.m */; };
-		A7949A9D14CC566100A8CCDE /* DTCoreTextConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = A7949A9C14CC565F00A8CCDE /* DTCoreTextConstants.h */; };
-		A7949A9E14CC566100A8CCDE /* DTCoreTextConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = A7949A9C14CC565F00A8CCDE /* DTCoreTextConstants.h */; };
+		A7949A9D14CC566100A8CCDE /* DTCoreTextConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = A7949A9C14CC565F00A8CCDE /* DTCoreTextConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A7949A9E14CC566100A8CCDE /* DTCoreTextConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = A7949A9C14CC565F00A8CCDE /* DTCoreTextConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A7949A9F14CC572000A8CCDE /* DTCoreTextParagraphStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = A788C92514863E8700E1AFD9 /* DTCoreTextParagraphStyle.m */; };
 		A7949AA214CC5BDC00A8CCDE /* DTHTMLAttributedStringBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A7949A4614CAF58C00A8CCDE /* DTHTMLAttributedStringBuilder.m */; };
 		A7949AA314CC5BDF00A8CCDE /* DTHTMLAttributedStringBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A7949A4614CAF58C00A8CCDE /* DTHTMLAttributedStringBuilder.m */; };
@@ -704,20 +704,6 @@
 			name = Utils;
 			sourceTree = "<group>";
 		};
-		E47F622B148E151000237E73 /* Hyphenate */ = {
-			isa = PBXGroup;
-			children = (
-				E47F6211148E14D400237E73 /* hnjalloc.c */,
-				E47F6212148E14D400237E73 /* hnjalloc.h */,
-				E47F6213148E14D400237E73 /* hyphen.c */,
-				E47F6214148E14D400237E73 /* hyphen.h */,
-				E47F6215148E14D400237E73 /* Hyphenate.bundle */,
-				E47F6216148E14D400237E73 /* NSString+Hyphenate.h */,
-				E47F6217148E14D400237E73 /* NSString+Hyphenate.m */,
-			);
-			name = Hyphenate;
-			sourceTree = "<group>";
-		};			
 		A7949A4414CAF56300A8CCDE /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
@@ -739,6 +725,20 @@
 				A7949A5F14CC456000A8CCDE /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		E47F622B148E151000237E73 /* Hyphenate */ = {
+			isa = PBXGroup;
+			children = (
+				E47F6211148E14D400237E73 /* hnjalloc.c */,
+				E47F6212148E14D400237E73 /* hnjalloc.h */,
+				E47F6213148E14D400237E73 /* hyphen.c */,
+				E47F6214148E14D400237E73 /* hyphen.h */,
+				E47F6215148E14D400237E73 /* Hyphenate.bundle */,
+				E47F6216148E14D400237E73 /* NSString+Hyphenate.h */,
+				E47F6217148E14D400237E73 /* NSString+Hyphenate.m */,
+			);
+			name = Hyphenate;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -777,12 +777,12 @@
 				A788C9F314863E8700E1AFD9 /* NSString+UTF8Cleaner.h in Headers */,
 				A788C9FD14863E8700E1AFD9 /* NSURL+HTML.h in Headers */,
 				A788CA0214863E8700E1AFD9 /* UIColor+HTML.h in Headers */,
+				A7949A9D14CC566100A8CCDE /* DTCoreTextConstants.h in Headers */,
 				A788CA0C14863E8700E1AFD9 /* UIDevice+DTVersion.h in Headers */,
 				A70B4C9F1486558200873A4A /* DTCoreText.h in Headers */,
 				E47F621B148E14D400237E73 /* hnjalloc.h in Headers */,
 				E47F6220148E14D400237E73 /* hyphen.h in Headers */,
 				E47F6224148E14D400237E73 /* NSString+Hyphenate.h in Headers */,
-				A7949A9D14CC566100A8CCDE /* DTCoreTextConstants.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -809,6 +809,7 @@
 				A788C9B814863E8700E1AFD9 /* DTTextAttachment.h in Headers */,
 				A788C9BD14863E8700E1AFD9 /* DTWebVideoView.h in Headers */,
 				A788C9C714863E8700E1AFD9 /* NSAttributedString+HTML.h in Headers */,
+				A7949A9E14CC566100A8CCDE /* DTCoreTextConstants.h in Headers */,
 				A788C9D114863E8700E1AFD9 /* NSAttributedStringRunDelegates.h in Headers */,
 				A788C9D614863E8700E1AFD9 /* NSCharacterSet+HTML.h in Headers */,
 				A788C9DB14863E8700E1AFD9 /* NSData+DTBase64.h in Headers */,
@@ -825,7 +826,6 @@
 				E47F621C148E14D400237E73 /* hnjalloc.h in Headers */,
 				E47F6221148E14D400237E73 /* hyphen.h in Headers */,
 				E47F6225148E14D400237E73 /* NSString+Hyphenate.h in Headers */,
-				A7949A9E14CC566100A8CCDE /* DTCoreTextConstants.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1511,8 +1511,8 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1527,8 +1527,8 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 			};
