@@ -20,6 +20,7 @@
 #import "DTCoreTextParagraphStyle.h"
 #import "DTHTMLElement.h"
 #import "DTTextAttachment.h"
+#import "NSString+Hyphenate.h"
 
 #import "NSMutableAttributedString+HTML.h"
 
@@ -684,20 +685,27 @@
 	// block items have to have a NL at the end.
 	if (![currentTag isInline] && ![currentTag isMeta] && ![[tmpString string] hasSuffix:@"\n"] /* && ![[tmpString string] hasSuffix:UNICODE_OBJECT_PLACEHOLDER] */)
 	{
-		if ([tmpString length])
+		if ([tmpString length] && !currentTag.text)
 		{
 			[tmpString appendString:@"\n"];  // extends attributed area at end
 		}
 		else
 		{
-			currentTag.text = @"\n";
-			[tmpString appendAttributedString:[currentTag attributedString]];
+			currentTag.text = [currentTag.text stringByAppendingString:@"\n"];
 		}
 	}
 	
 	// check if this tag is indeed closing the currently open one
 	if ([elementName isEqualToString:currentTag.tagName])
 	{
+		
+		if (currentTag.paragraphStyle.textAlignment == kCTJustifiedTextAlignment) {
+			currentTag.text = [currentTag.text stringByHyphenatingWithLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+		}
+		if (![currentTag isMeta] && !currentTag.tagContentInvisible && currentTag.text) {			
+			[tmpString appendAttributedString:[currentTag attributedString]];
+		}	
+
 		DTHTMLElement *popChild = currentTag;
 		currentTag = currentTag.parent;
 		[currentTag removeChild:popChild];
@@ -808,9 +816,7 @@
 	// we don't want whitespace before first tag to turn into paragraphs
 	if (![currentTag isMeta] && !currentTag.tagContentInvisible)
 	{
-		currentTag.text = tagContents;
-		
-		[tmpString appendAttributedString:[currentTag attributedString]];
+		currentTag.text = currentTag.text ? [currentTag.text stringByAppendingString:tagContents] : tagContents;
 	}	
 }
 
