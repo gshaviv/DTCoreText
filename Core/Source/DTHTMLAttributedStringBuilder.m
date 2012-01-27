@@ -912,12 +912,7 @@
 	
 	// we don't want whitespace before first tag to turn into paragraphs
 	if (![currentTag isMeta] && !currentTag.tagContentInvisible)
-	{
-		if (currentTag.paragraphStyle.textAlignment == kCTJustifiedTextAlignment) {
-			tagContents = [tagContents stringByHyphenatingWithLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-		}
-		currentTag.text = tagContents;
-		
+	{		
 		if (_willFlushCallback)
 		{
 			_willFlushCallback(currentTag);
