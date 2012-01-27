@@ -708,7 +708,8 @@
 
 - (void)removeChild:(DTHTMLElement *)child
 {
-	[self.children removeLastObject];
+	child.parent = nil;
+	[self.children removeObject:child];
 }
 
 - (DTHTMLElement *)parentWithTagName:(NSString *)name
