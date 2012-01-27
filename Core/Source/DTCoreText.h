@@ -1,3 +1,4 @@
+#import "NSAttributedString+HTMLWithHyphenate.h"
 #import "CGUtils.h"
 #import "DTAttributedTextCell.h"
 #import "DTAttributedTextContentView.h"
