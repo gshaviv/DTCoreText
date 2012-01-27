@@ -13,6 +13,5 @@ extern NSString *DTDefaultLineHeightMultiplier;
 extern NSString *DTDefaultFirstLineHeadIndent;
 extern NSString *DTDefaultHeadIndent;
 extern NSString *DTDefaultListIndent;
-extern NSString *DTParagraphSpacing;
 
 extern NSString *DTDefaultStyleSheet;

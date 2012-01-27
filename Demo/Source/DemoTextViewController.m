@@ -115,7 +115,7 @@
 	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:1.0], NSTextSizeMultiplierDocumentOption, [NSValue valueWithCGSize:maxImageSize], DTMaxImageSize,
 													 @"Times New Roman", DTDefaultFontFamily,  @"purple", DTDefaultLinkColor, baseURL, NSBaseURLDocumentOption, nil]; 
 	
-	NSAttributedString *string = [[NSAttributedString alloc] initWithHTML:data options:options documentAttributes:NULL];
+	NSAttributedString *string = [[NSAttributedString alloc] initWithHTML:html options:options hyphenate:YES];
 	
 	// Display string
 	_textView.contentView.edgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);

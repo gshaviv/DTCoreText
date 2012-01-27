@@ -14,5 +14,5 @@ NSString *DTDefaultLineHeightMultiplier = @"DTDefaultLineHeightMultiplier";
 NSString *DTDefaultFirstLineHeadIndent = @"DTDefaultFirstLineHeadIndent";
 NSString *DTDefaultHeadIndent = @"DTDefaultHeadIndent";
 NSString *DTDefaultListIndent = @"DTDefaultListIndent";
-NSString *DTParagraphSpacing = @"DTParagraphSpacing";
+
 NSString *DTDefaultStyleSheet = @"DTDefaultStyleSheet";

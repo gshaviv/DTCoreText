@@ -904,7 +904,7 @@
 	// we don't want whitespace before first tag to turn into paragraphs
 	if (![currentTag isMeta] && !currentTag.tagContentInvisible)
 	{		
-		currentTag.text = tagContent;
+		currentTag.text = tagContents;
 		if (_willFlushCallback)
 		{
 			_willFlushCallback(currentTag);

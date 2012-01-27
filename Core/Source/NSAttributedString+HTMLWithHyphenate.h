@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString *DTParagraphSpacing;
+
+
 @interface NSAttributedString (HTMLWithHyphenate)
-- (id)initWithHTMLToHyphenate:(NSString *)html options:(NSDictionary *)options;
+- (id)initWithHTML:(NSString *)html options:(NSDictionary *)options hyphenate:(BOOL)hyphenate;
 @end
