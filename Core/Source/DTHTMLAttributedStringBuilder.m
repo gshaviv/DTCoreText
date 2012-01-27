@@ -22,8 +22,6 @@
 #import "DTTextAttachment.h"
 
 #import "NSMutableAttributedString+HTML.h"
-//#import "NSString+Hyphenate.h"
-
 
 @interface DTHTMLAttributedStringBuilder ()
 
@@ -257,13 +255,6 @@
 	if (defaultListIndent)
 	{
 		defaultParagraphStyle.listIndent = [defaultListIndent integerValue];
-	}
-	
-	NSNumber *defaultParagraphSpacing = [_options objectForKey:DTParagraphSpacing];
-	if (defaultParagraphSpacing) {
-		defaultParagraphStyle.paragraphSpacing = [defaultParagraphSpacing integerValue];
-	} else {
-		defaultParagraphStyle.paragraphSpacing = defaultFontDescriptor.pointSize;
 	}
 	
 	DTHTMLElement *defaultTag = [[DTHTMLElement alloc] init];
@@ -746,7 +737,7 @@
 	
 	void (^pBlock)(void) = ^ 
 	{
-		currentTag.paragraphStyle.paragraphSpacing = defaultParagraphStyle.paragraphSpacing;
+		currentTag.paragraphStyle.paragraphSpacing = defaultFontDescriptor.pointSize;
 		currentTag.paragraphStyle.firstLineIndent = currentTag.paragraphStyle.headIndent + defaultParagraphStyle.firstLineIndent;
 	};
 	
@@ -913,6 +904,7 @@
 	// we don't want whitespace before first tag to turn into paragraphs
 	if (![currentTag isMeta] && !currentTag.tagContentInvisible)
 	{		
+		currentTag.text = tagContent;
 		if (_willFlushCallback)
 		{
 			_willFlushCallback(currentTag);

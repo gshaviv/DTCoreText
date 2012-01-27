@@ -28,7 +28,6 @@
 
 #import "CGUtils.h"
 #import "NSString+UTF8Cleaner.h"
-#import "NSString+Hyphenate.h"
 
 #import "DTCoreTextConstants.h"
 #import "DTHTMLAttributedStringBuilder.h"
