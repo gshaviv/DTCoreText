@@ -33,50 +33,48 @@
 {
 	DTHTMLElement *parent;
 	
-    DTCoreTextFontDescriptor *fontDescriptor;
-    DTCoreTextParagraphStyle *paragraphStyle;
-    DTTextAttachment *textAttachment;
-    NSURL *link;
-    
-    UIColor *_textColor;
+	DTCoreTextFontDescriptor *fontDescriptor;
+	DTCoreTextParagraphStyle *paragraphStyle;
+	DTTextAttachment *textAttachment;
+	NSURL *link;
+	
+	UIColor *_textColor;
 	UIColor *backgroundColor;
-    
-    CTUnderlineStyle underlineStyle;
-    
-    NSString *tagName;
-    NSString *text;
-    
-    BOOL tagContentInvisible;
-    BOOL strikeOut;
-    NSInteger superscriptStyle;
-    
-    NSInteger headerLevel;
-    
-    NSArray *shadows;
-    
-    NSMutableDictionary *_fontCache;
-    
-    NSInteger _isInline;
-    NSInteger _isMeta;
+	
+	CTUnderlineStyle underlineStyle;
+	
+	NSString *tagName;
+	NSString *text;
+	
+	BOOL tagContentInvisible;
+	BOOL strikeOut;
+	NSInteger superscriptStyle;
+	
+	NSInteger headerLevel;
+	
+	NSArray *shadows;
+	
+	NSMutableDictionary *_fontCache;
 	
 	NSMutableDictionary *_additionalAttributes;
 	
+	DTHTMLElementDisplayStyle _displayStyle;
 	DTHTMLElementFloatStyle floatStyle;
-    DTCSSListStyle *_listStyle;
-    
+	DTCSSListStyle *_listStyle;
+	
 	BOOL isColorInherited;
 	
 	BOOL preserveNewlines;
 	
 	DTHTMLElementFontVariant fontVariant;
-    
-    CGFloat textScale;
-    CGSize size;
-    
-    NSInteger _listDepth;
-    NSInteger _listCounter;
-    
-    NSMutableArray *_children;
+	
+	CGFloat textScale;
+	CGSize size;
+	
+	NSInteger _listDepth;
+	NSInteger _listCounter;
+	
+	NSMutableArray *_children;
 	NSDictionary *_attributes; // contains all attributes from parsing
 }
 
@@ -85,8 +83,6 @@
 	self = [super init];
 	if (self)
 	{
-		_isInline = -1;
-		_isMeta = -1;
 		_listDepth = -1;
 		_listCounter = NSIntegerMin;
 	}
@@ -187,18 +183,6 @@
 	if (superscriptStyle)
 	{
 		[tmpDict setObject:(id)[NSNumber numberWithInt:superscriptStyle] forKey:(id)kCTSuperscriptAttributeName];
-	}
-	
-	// correct spacing to match current font size
-	if (self.paragraphStyle.paragraphSpacing == 0)
-	{
-		self.paragraphStyle.paragraphSpacing = self.fontDescriptor.pointSize;
-	}
-	
-	// correct spacing to match current font size
-	if (self.paragraphStyle.paragraphSpacingBefore>0)
-	{
-		self.paragraphStyle.paragraphSpacingBefore = self.fontDescriptor.pointSize;
 	}
 	
 	// add paragraph style
@@ -672,10 +656,18 @@
 	}
 	
 	NSString *marginBottom = [styles objectForKey:@"margin-bottom"];
-	if (marginBottom) {
-		self.paragraphStyle.paragraphSpacing = [marginBottom intValue];
+	if (marginBottom) 
+	{
+		self.paragraphStyle.paragraphSpacing = [marginBottom pixelSizeOfCSSMeasureRelativeToCurrentTextSize:fontDescriptor.pointSize];
 	}
-	
+	else
+	{
+		NSString *webkitMarginAfter = [styles objectForKey:@"-webkit-margin-after"];
+		if (webkitMarginAfter) 
+		{
+			self.paragraphStyle.paragraphSpacing = [webkitMarginAfter pixelSizeOfCSSMeasureRelativeToCurrentTextSize:fontDescriptor.pointSize];
+		}
+	}
 	NSString *fontVariantStr = [[styles objectForKey:@"font-variant"] lowercaseString];
 	if (fontVariantStr)
 	{
@@ -707,6 +699,41 @@
 	if (heightString && ![heightString isEqualToString:@"auto"])
 	{
 		size.height = [heightString pixelSizeOfCSSMeasureRelativeToCurrentTextSize:self.fontDescriptor.pointSize];
+	}
+	
+	NSString *whitespaceString = [styles objectForKey:@"white-space"];
+	if ([whitespaceString hasPrefix:@"pre"])
+	{
+		preserveNewlines = YES;
+	}
+	else
+	{
+		preserveNewlines = NO;
+	}
+	
+	NSString *displayString = [styles objectForKey:@"display"];
+	if (displayString)
+	{
+		if ([displayString isEqualToString:@"none"])
+		{
+			_displayStyle = DTHTMLElementDisplayStyleNone;
+		}
+		else if ([displayString isEqualToString:@"block"])
+		{
+			_displayStyle = DTHTMLElementDisplayStyleBlock;
+		}
+		else if ([displayString isEqualToString:@"inline"])
+		{
+			_displayStyle = DTHTMLElementDisplayStyleInline;
+		}
+		else if ([displayString isEqualToString:@"list-item"])
+		{
+			_displayStyle = DTHTMLElementDisplayStyleListItem;
+		}
+		else if ([verticalAlignment isEqualToString:@"inherit"])
+		{
+			// nothing to do
+		}
 	}
 }
 
@@ -750,12 +777,12 @@
 
 - (BOOL)isContainedInBlockElement
 {
-	if (!parent || [parent isMeta] || !parent.tagName) // default tag has no tag name
+	if (!parent || !parent.tagName) // default tag has no tag name
 	{
 		return NO;
 	}
 	
-	if ([self.parent isInline])
+	if (self.parent.displayStyle == DTHTMLElementDisplayStyleInline)
 	{
 		return [self.parent isContainedInBlockElement];
 	}
@@ -866,25 +893,6 @@
 	return _fontCache;
 }
 
-- (BOOL)isInline
-{
-	if (_isInline<0)
-	{
-		_isInline = [tagName isInlineTag];
-	}
-	
-	return _isInline ? YES : NO;
-}
-
-- (BOOL)isMeta
-{
-	if (_isMeta<0)
-	{
-		_isMeta = [tagName isMetaTag];
-	}
-	
-	return _isMeta ? YES : NO;
-}
 - (void)setTextColor:(UIColor *)textColor
 {
 	if (_textColor != textColor)
@@ -1033,10 +1041,10 @@
 @synthesize superscriptStyle;
 @synthesize headerLevel;
 @synthesize shadows;
-@synthesize isInline;
 @synthesize floatStyle;
 @synthesize isColorInherited;
 @synthesize preserveNewlines;
+@synthesize displayStyle = _displayStyle;
 @synthesize fontVariant;
 @synthesize listStyle = _listStyle;
 @synthesize textScale;

@@ -53,14 +53,13 @@
 	CGFloat nextParagraphAdditionalSpaceBefore;
 	BOOL needsListItemStart;
 	BOOL needsNewLineBefore;
-	BOOL immediatelyClosed; 
 	
 	// GCD
 	dispatch_queue_t _stringAssemblyQueue;
 	dispatch_group_t _stringAssemblyGroup;
 	dispatch_queue_t _stringParsingQueue;
 	dispatch_group_t _stringParsingGroup;
-
+	
 	// lookup table for blocks that deal with begin and end tags
 	NSMutableDictionary *_tagStartHandlers;
 	NSMutableDictionary *_tagEndHandlers;
@@ -152,7 +151,19 @@
 	_globalStyleSheet = [[DTCSSStylesheet alloc] init]; 
 	
 	// default styles
-	[_globalStyleSheet parseStyleBlock:@"ul {list-style:disc;} ol {list-style:decimal;}"];
+	[_globalStyleSheet parseStyleBlock:@"html {display: block;}"];
+	[_globalStyleSheet parseStyleBlock:@"head {display: none;}"];
+	[_globalStyleSheet parseStyleBlock:@"title {display: none;}"];
+	[_globalStyleSheet parseStyleBlock:@"style {display: none;}"];
+	
+	[_globalStyleSheet parseStyleBlock:@"body {display: block;}"]; // safari has the doc indent here 8px
+	
+	[_globalStyleSheet parseStyleBlock:@"p {display: block;-webkit-margin-before: 1em;-webkit-margin-after: 1em;-webkit-margin-start: 0px;-webkit-margin-end: 0px;}"];
+	
+	[_globalStyleSheet parseStyleBlock:@"ul, menu, dir {display: block;list-style-type: disc;-webkit-margin-before: 1em;-webkit-margin-after: 1em;-webkit-margin-start: 0px;-webkit-margin-end: 0px;-webkit-padding-start: 40px;}"];
+	[_globalStyleSheet parseStyleBlock:@"li {display:list-item;}"];
+	[_globalStyleSheet parseStyleBlock:@"ol {display: block;list-style-type: decimal;-webkit-margin-before: 1em;-webkit-margin-after: 1em;-webkit-margin-start: 0px;-webkit-margin-end: 0px;-webkit-padding-start: 40px;}"];
+	
 	[_globalStyleSheet parseStyleBlock:@"code {font-family: Courier;} pre {font-family: Courier;}"];
 	[_globalStyleSheet parseStyleBlock:@"a {color:#0000EE;text-decoration:underline;}"]; // color:-webkit-link
 	[_globalStyleSheet parseStyleBlock:@"left {text-align:left;}"];
@@ -165,15 +176,17 @@
 	[_globalStyleSheet parseStyleBlock:@"small {font-size:smaller;}"];
 	[_globalStyleSheet parseStyleBlock:@"sub {font-size:smaller; vertical-align:sub;}"];
 	[_globalStyleSheet parseStyleBlock:@"sup {font-size:smaller; vertical-align:super;}"];
-	
+	[_globalStyleSheet parseStyleBlock:@"s, strike, del { text-decoration:line-through; }"];
+	[_globalStyleSheet parseStyleBlock:@"tt, code, kbd, samp { font-family: monospace; }"];
+	[_globalStyleSheet parseStyleBlock:@"pre, xmp, plaintext, listing {display: block;font-family:monospace;white-space:pre;margin-top: 1em;margin-right:0px;margin-bottom:1em;margin-left:0px;}"];
 	
 	// TODO: wire these up, note that safari uses -webkit-margin-*
-	[_globalStyleSheet parseStyleBlock:@"h1 {display:block; font-size: 2em; -webkit-margin-before: 0.67em; -webkit-margin-after: 0.67em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;"];
-	[_globalStyleSheet parseStyleBlock:@"h2 {display:block; font-size: 1.5em; -webkit-margin-before: 0.83em; -webkit-margin-after: 0.83em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;"];
-	[_globalStyleSheet parseStyleBlock:@"h3 {display:block; font-size: 1.17em; -webkit-margin-before: 1em; -webkit-margin-after: 1em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;"];
-	[_globalStyleSheet parseStyleBlock:@"h4 {display:block; -webkit-margin-before: 1.33em; -webkit-margin-after: 1.33em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;"];
-	[_globalStyleSheet parseStyleBlock:@"h5 {display:block; font-size: 0.83em; -webkit-margin-before: 1.67em; -webkit-margin-after: 1.67em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;"];
-	[_globalStyleSheet parseStyleBlock:@"h6 {display:block; font-size: 0.67em; -webkit-margin-before: 2.33em; -webkit-margin-after: 2.33em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;"];
+	[_globalStyleSheet parseStyleBlock:@"h1 {display:block; font-size: 2em; -webkit-margin-before: 0.67em; -webkit-margin-after: 0.67em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;}"];
+	[_globalStyleSheet parseStyleBlock:@"h2 {display:block; font-size: 1.5em; -webkit-margin-before: 0.83em; -webkit-margin-after: 0.83em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;}"];
+	[_globalStyleSheet parseStyleBlock:@"h3 {display:block; font-size: 1.17em; -webkit-margin-before: 1em; -webkit-margin-after: 1em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;}"];
+	[_globalStyleSheet parseStyleBlock:@"h4 {display:block; -webkit-margin-before: 1.33em; -webkit-margin-after: 1.33em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;}"];
+	[_globalStyleSheet parseStyleBlock:@"h5 {display:block; font-size: 0.83em; -webkit-margin-before: 1.67em; -webkit-margin-after: 1.67em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;}"];
+	[_globalStyleSheet parseStyleBlock:@"h6 {display:block; font-size: 0.67em; -webkit-margin-before: 2.33em; -webkit-margin-after: 2.33em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; font-weight: bold;}"];
 	
 	// do we have a default style sheet passed as option?
 	DTCSSStylesheet *defaultStylesheet = [_options objectForKey:DTDefaultStyleSheet];
@@ -326,8 +339,6 @@
 	
 	void (^imgBlock)(void) = ^ 
 	{
-		immediatelyClosed = YES;
-		
 		if (![currentTag.parent.tagName isEqualToString:@"p"])
 		{
 			needsNewLineBefore = YES;
@@ -439,7 +450,7 @@
 	};
 	
 	[_tagStartHandlers setObject:[aBlock copy] forKey:@"a"];
-
+	
 	
 	void (^liBlock)(void) = ^ 
 	{
@@ -471,15 +482,6 @@
 	
 	[_tagStartHandlers setObject:[liBlock copy] forKey:@"li"];
 	
-
-	void (^delBlock)(void) = ^ 
-	{
-		currentTag.strikeOut = YES;
-	};
-	
-	[_tagStartHandlers setObject:[delBlock copy] forKey:@"del"];
-	[_tagStartHandlers setObject:[delBlock copy] forKey:@"strike"];
-	
 	
 	void (^olBlock)(void) = ^ 
 	{
@@ -510,20 +512,8 @@
 	[_tagStartHandlers setObject:[ulBlock copy] forKey:@"ul"];
 	
 	
-
-	void (^preBlock)(void) = ^ 
-	{
-		currentTag.preserveNewlines = YES;
-		currentTag.paragraphStyle.textAlignment = kCTNaturalTextAlignment;	
-	};
-	
-	[_tagStartHandlers setObject:[preBlock copy] forKey:@"pre"];
-	
-	
 	void (^hrBlock)(void) = ^ 
 	{
-		immediatelyClosed = YES;
-		
 		// open block needs closing
 		if (needsNewLineBefore)
 		{
@@ -560,56 +550,7 @@
 		if (headerLevel)
 		{
 			currentTag.headerLevel = headerLevel;
-			currentTag.fontDescriptor.boldTrait = YES;
-			
-			switch (headerLevel) 
-			{
-				case 1:
-				{
-					// H1: 2 em, spacing before 0.67 em, after 0.67 em
-					currentTag.fontDescriptor.pointSize *= 2.0;
-					currentTag.paragraphStyle.paragraphSpacing = 0.67f * currentTag.fontDescriptor.pointSize;
-					break;
-				}
-				case 2:
-				{
-					// H2: 1.5 em, spacing before 0.83 em, after 0.83 em
-					currentTag.fontDescriptor.pointSize *= 1.5;
-					currentTag.paragraphStyle.paragraphSpacing = 0.83f * currentTag.fontDescriptor.pointSize;
-					break;
-				}
-				case 3:
-				{
-					// H3: 1.17 em, spacing before 1 em, after 1 em
-					currentTag.fontDescriptor.pointSize *= 1.17;
-					currentTag.paragraphStyle.paragraphSpacing = 1.0f * currentTag.fontDescriptor.pointSize;
-					break;
-				}
-				case 4:
-				{
-					// H4: 1 em, spacing before 1.33 em, after 1.33 em
-					currentTag.paragraphStyle.paragraphSpacing = 1.33f * currentTag.fontDescriptor.pointSize;
-					break;
-				}
-				case 5:
-				{
-					// H5: 0.83 em, spacing before 1.67 em, after 1.167 em
-					currentTag.fontDescriptor.pointSize *= 0.83;
-					currentTag.paragraphStyle.paragraphSpacing = 1.67f * currentTag.fontDescriptor.pointSize;
-					break;
-				}
-				case 6:
-				{
-					// H6: 0.67 em, spacing before 2.33 em, after 2.33 em
-					currentTag.fontDescriptor.pointSize *= 0.67;
-					currentTag.paragraphStyle.paragraphSpacing = 2.33f * currentTag.fontDescriptor.pointSize;
-					break;
-				}
-				default:
-					break;
-			}
 		}
-		
 	};
 	
 	[_tagStartHandlers setObject:[hBlock copy] forKey:@"h1"];
@@ -681,9 +622,9 @@
 	
 	void (^brBlock)(void) = ^ 
 	{
-		immediatelyClosed = YES; 
-		
 		currentTag.text = UNICODE_LINE_FEED;
+		
+		// NOTE: cannot use flush because that removes the break
 		[tmpString appendAttributedString:[currentTag attributedString]];
 	};
 	
@@ -727,7 +668,7 @@
 - (void)_handleTagContent:(NSString *)string
 {
 	NSAssert(dispatch_get_current_queue() == _stringAssemblyQueue, @"method called from invalid queue");
-
+	
 	if (!_currentTagContents)
 	{
 		_currentTagContents = [[NSMutableString alloc] initWithCapacity:1000];
@@ -740,7 +681,7 @@
 - (void)_flushCurrentTagContent:(NSString *)tagContent
 {
 	NSAssert(dispatch_get_current_queue() == _stringAssemblyQueue, @"method called from invalid queue");
-
+	
 	// trim newlines
 	NSString *tagContents = [tagContent stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 	
@@ -760,7 +701,7 @@
 	}
 	
 #if ALLOW_IPHONE_SPECIAL_CASES				
-	if (![currentTag isInline] && ![currentTag.tagName isEqualToString:@"li"])
+	if (!(currentTag.displayStyle == DTHTMLElementDisplayStyleInline) && ![currentTag.tagName isEqualToString:@"li"])
 	{
 		if (nextParagraphAdditionalSpaceBefore>0)
 		{
@@ -837,8 +778,8 @@
 	}
 	
 	// we don't want whitespace before first tag to turn into paragraphs
-	if (![currentTag isMeta] && !currentTag.tagContentInvisible)
-	{		
+	if (!(currentTag.displayStyle == DTHTMLElementDisplayStyleNone) && !currentTag.tagContentInvisible)
+	{
 		currentTag.text = tagContents;
 		if (_willFlushCallback)
 		{
@@ -874,7 +815,7 @@
 			[currentTag applyStyleDictionary:mergedStyles];
 		}
 		
-		if ([elementName isMetaTag])
+		if (currentTag.displayStyle == DTHTMLElementDisplayStyleNone)
 		{
 			// we don't care about the other stuff in META tags, but styles are inherited
 			return;
@@ -908,7 +849,6 @@
 	};
 	
 	dispatch_group_async(_stringAssemblyGroup, _stringAssemblyQueue, tmpBlock);
-	
 }
 
 - (void)parser:(DTHTMLParser *)parser didEndElement:(NSString *)elementName
@@ -924,11 +864,11 @@
 		{
 			tagBlock();
 		}
-			
+		
 		// NOTE: we are adding the NL (after blocks) here because otherwise we don't deal with <p>bla<b>bold</b></p><p>new para</p>.
 		
 		// block items have to have a NL at the end.
-		if (![currentTag isInline] && ![currentTag isMeta] && ![[tmpString string] hasSuffix:@"\n"] /* && ![[tmpString string] hasSuffix:UNICODE_OBJECT_PLACEHOLDER] */)
+		if (!(currentTag.displayStyle == DTHTMLElementDisplayStyleInline) && !(currentTag.displayStyle == DTHTMLElementDisplayStyleNone) && ![[tmpString string] hasSuffix:@"\n"])
 		{
 			if ([tmpString length])
 			{
@@ -940,7 +880,7 @@
 				[tmpString appendAttributedString:[currentTag attributedString]];
 			}
 		}
-
+		
 		// check if this tag is indeed closing the currently open one
 		if ([elementName isEqualToString:currentTag.tagName])
 		{
