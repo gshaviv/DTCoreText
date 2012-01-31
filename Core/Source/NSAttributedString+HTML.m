@@ -63,7 +63,6 @@
 	
 
 	DTHTMLAttributedStringBuilder	*stringBuilder = [[DTHTMLAttributedStringBuilder alloc] initWithHTML:data options:options documentAttributes:dict];
-
 	
 	[stringBuilder buildString];
 	
@@ -445,8 +444,6 @@
 		
 		[retString appendFormat:@"</%@>\n", blockElement];
 	}
-	
-	//NSLog(@"%@", retString);
 	
 	return retString;
 }

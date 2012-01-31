@@ -396,8 +396,6 @@
 		maxLeading = MAX(maxLeading, runLeading);
 	}
 	
-	NSLog(@"my leading %f, calc %f", self.leading, maxLeading);
-	
 	return maxLeading;
 }
 
