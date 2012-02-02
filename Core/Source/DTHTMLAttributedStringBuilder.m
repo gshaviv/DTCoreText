@@ -1,5 +1,5 @@
 //
-//  DTHTMLDocument.m
+//  DTHTMLAttributedStringBuilder.m
 //  DTCoreText
 //
 //  Created by Oliver Drobnik on 21.01.12.
@@ -7,21 +7,19 @@
 //
 
 #import "DTHTMLAttributedStringBuilder.h"
-#import "DTHTMLParser.h"
-
-#import "NSString+UTF8Cleaner.h"
-#import "NSString+HTML.h"
-#import "UIColor+HTML.h"
-#import "DTCSSStylesheet.h"
 
 #import "DTCoreTextConstants.h"
-
+#import "DTCSSStylesheet.h"
 #import "DTCoreTextFontDescriptor.h"
 #import "DTCoreTextParagraphStyle.h"
-#import "DTHTMLElement.h"
-#import "DTTextAttachment.h"
 
-#import "NSMutableAttributedString+HTML.h"
+#import "DTColor+HTML.h"
+#import "DTImage+HTML.h"
+
+#import "NSString+HTML.h"
+#import "NSString+CSS.h"
+#import "NSMutableString+HTML.h"
+
 
 @interface DTHTMLAttributedStringBuilder ()
 
@@ -39,7 +37,7 @@
 	
 	// settings for parsing
 	CGFloat textScale;
-	UIColor *defaultLinkColor;
+	DTColor *defaultLinkColor;
 	DTCSSStylesheet *_globalStyleSheet;
 	NSURL *baseURL;
 	DTCoreTextFontDescriptor *defaultFontDescriptor;
@@ -53,6 +51,7 @@
 	BOOL needsListItemStart;
 	BOOL needsNewLineBefore;
 	BOOL outputHasNewline;
+	BOOL currentTagIsEmpty; // YES for each opened tag, NO for anything flushed including hr, br, img -> adds an extra NL for <p></p>
 	
 	// GCD
 	dispatch_queue_t _stringAssemblyQueue;
@@ -225,10 +224,10 @@
 		if ([defaultLinkColor isKindOfClass:[NSString class]])
 		{
 			// convert from string to color
-			defaultLinkColor = [UIColor colorWithHTMLName:(NSString *)defaultLinkColor];
+			defaultLinkColor = [DTColor colorWithHTMLName:(NSString *)defaultLinkColor];
 		}
 		
-		// get hex code for the passed color
+		// get hex code for t   he passed color
 		NSString *colorHex = [defaultLinkColor htmlHexString];
 		
 		// overwrite the style
@@ -292,15 +291,15 @@
 	id defaultColor = [_options objectForKey:DTDefaultTextColor];
 	if (defaultColor)
 	{
-		if ([defaultColor isKindOfClass:[UIColor class]])
+		if ([defaultColor isKindOfClass:[DTColor class]])
 		{
-			// already a UIColor
+			// already a DTColor
 			defaultTag.textColor = defaultColor;
 		}
 		else
 		{
 			// need to convert first
-			defaultTag.textColor = [UIColor colorWithHTMLName:defaultColor];
+			defaultTag.textColor = [DTColor colorWithHTMLName:defaultColor];
 		}
 	}
 	
@@ -334,7 +333,8 @@
 	
 	void (^imgBlock)(void) = ^ 
 	{
-		if (![currentTag.parent.tagName isEqualToString:@"p"])
+		// float causes the image to be its own block
+		if (currentTag.floatStyle != DTHTMLElementFloatStyleNone)
 		{
 			currentTag.displayStyle = DTHTMLElementDisplayStyleBlock;
 		}
@@ -381,11 +381,12 @@
 		// add it to output
 		[tmpString appendAttributedString:[currentTag attributedString]];	
 		outputHasNewline = NO;
+		currentTagIsEmpty = NO;
 		
-		if (currentTag.displayStyle == DTHTMLElementDisplayStyleBlock)
-		{
-			needsNewLineBefore = YES;
-		}
+//		if (currentTag.displayStyle == DTHTMLElementDisplayStyleBlock)
+//		{
+//			needsNewLineBefore = YES;
+//		}
 	};
 	
 	[_tagStartHandlers setObject:[imgBlock copy] forKey:@"img"];
@@ -423,7 +424,6 @@
 	[_tagStartHandlers setObject:[objectBlock copy] forKey:@"object"];
 	[_tagStartHandlers setObject:[objectBlock copy] forKey:@"video"];
 	[_tagStartHandlers setObject:[objectBlock copy] forKey:@"iframe"];
-	
 	
 	
 	void (^aBlock)(void) = ^ 
@@ -553,6 +553,7 @@
 		
 		[tmpString appendAttributedString:[currentTag attributedString]];
 		outputHasNewline = YES;
+		currentTagIsEmpty = NO;
 	};
 	
 	[_tagStartHandlers setObject:[hrBlock copy] forKey:@"hr"];
@@ -644,7 +645,7 @@
 		
 		if (color)
 		{
-			currentTag.textColor = [UIColor colorWithHTMLName:color];       
+			currentTag.textColor = [DTColor colorWithHTMLName:color];       
 		}
 	};
 	
@@ -666,6 +667,7 @@
 		// NOTE: cannot use flush because that removes the break
 		[tmpString appendAttributedString:[currentTag attributedString]];
 		outputHasNewline = NO;
+		currentTagIsEmpty = NO;
 	};
 	
 	[_tagStartHandlers setObject:[brBlock copy] forKey:@"br"];
@@ -727,6 +729,18 @@
 	
 	[_tagEndHandlers setObject:[ulBlock copy] forKey:@"ul"];
 	[_tagEndHandlers setObject:[ulBlock copy] forKey:@"ol"];
+	
+	void (^pBlock)(void) = ^ 
+	{
+		// we need to output something for <p></p>
+		if (currentTagIsEmpty)
+		{
+			[tmpString appendString:@"\n"];
+			outputHasNewline = NO;  // NO: otherwise a following needed NL is cancelled
+		}
+	};
+	
+	[_tagEndHandlers setObject:[pBlock copy] forKey:@"p"];
 }
 
 - (void)_handleTagContent:(NSString *)string
@@ -825,6 +839,9 @@
 		
 		[tmpString appendAttributedString:[currentTag attributedString]];
 		outputHasNewline = NO;
+		
+		// we've written something
+		currentTagIsEmpty = NO;
 	}	
 	
 	_currentTagContents = nil;
@@ -836,25 +853,40 @@
 {
 	void (^tmpBlock)(void) = ^
 	{
+		DTHTMLElement *parent = currentTag;
+		DTHTMLElement *nextTag = [currentTag copy];
+		nextTag.tagName = elementName;
+		nextTag.textScale = textScale;
+		nextTag.attributes = attributeDict;
+		[parent addChild:nextTag];
+		
+		// apply style from merged style sheet
+		NSDictionary *mergedStyles = [_globalStyleSheet mergedStyleDictionaryForElement:nextTag];
+		if (mergedStyles)
+		{
+			[nextTag applyStyleDictionary:mergedStyles];
+		}
+
+		// keep currentTag, might be used in flush
 		if (_currentTagContents)
 		{
+			// remove whitespace suffix in current non-block item
+			if (nextTag.displayStyle == DTHTMLElementDisplayStyleBlock)
+			{
+				if (currentTag.displayStyle != DTHTMLElementDisplayStyleBlock)
+				{
+					[_currentTagContents removeWhitespaceSuffix];
+				}
+			}
+
 			[self _flushCurrentTagContent:_currentTagContents];
 		}
 		
-		// make new tag as copy of previous tag
-		DTHTMLElement *parent = currentTag;
-		currentTag = [currentTag copy];
-		currentTag.tagName = elementName;
-		currentTag.textScale = textScale;
-		currentTag.attributes = attributeDict;
-		[parent addChild:currentTag];
+		// keep track of something was flushed for this tag
+		currentTagIsEmpty = YES;
 		
-		// apply style from merged style sheet
-		NSDictionary *mergedStyles = [_globalStyleSheet mergedStyleDictionaryForElement:currentTag];
-		if (mergedStyles)
-		{
-			[currentTag applyStyleDictionary:mergedStyles];
-		}
+		// switch to new tag
+		currentTag = nextTag;
 		
 		if (currentTag.displayStyle == DTHTMLElementDisplayStyleNone)
 		{
@@ -917,6 +949,12 @@
 	{
 		if (_currentTagContents)
 		{
+			// trim off white space at end if block
+			if (currentTag.displayStyle != DTHTMLElementDisplayStyleInline)
+			{
+				[_currentTagContents removeWhitespaceSuffix];
+			}
+			
 			[self _flushCurrentTagContent:_currentTagContents];
 		}
 		
