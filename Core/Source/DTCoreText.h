@@ -21,7 +21,6 @@
 #import "NSString+Paragraphs.h"
 #import "NSString+UTF8Cleaner.h"
 #import "NSURL+HTML.h"
-#import "UIColor+HTML.h"
 #import "UIDevice+DTVersion.h"
 #import "DTCoreTextParagraphStyle.h"
 #import "NSMutableAttributedString+HTML.h"
